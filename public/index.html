@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manifold — a developer API platform. Issue API keys, manage projects through a validated REST API, and watch live telemetry. DecodeLabs Full Stack Project 2.">
+  <title>Manifold — API Developer Platform</title>
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    // Set theme before CSS paints — avoids a flash of the wrong theme.
+    (function () {
+      try {
+        var t = localStorage.getItem('manifold:theme');
+        if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.dataset.theme = t;
+      } catch (e) { document.documentElement.dataset.theme = 'dark'; }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" id="top">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top" aria-label="Manifold home">
+        <svg class="brand-mark" width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+          <path d="M4 15h7l3-3 3 3h9" stroke="#fbbf24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16 12v-5M16 18v5M26 12v-5M26 18v5" stroke="#2dd4bf" stroke-width="2.4" stroke-linecap="round"/>
+          <circle cx="4" cy="15" r="2.2" fill="#fbbf24"/>
+        </svg>
+        <span class="brand-name">Manifold</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#sandbox">Sandbox</a>
+        <a href="#metrics">Metrics</a>
+        <a href="#keys">Keys</a>
+        <a href="#docs">Docs</a>
+      </nav>
+      <p class="status-pill" id="apiStatus" role="status">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="apiStatusText">checking API…</span>
+      </p>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="wrap hero-inner">
+        <div class="hero-copy">
+          <p class="kicker">DecodeLabs · Full Stack Project 2</p>
+          <h1>One flow.<br>Many routes.</h1>
+          <p class="lede">
+            Manifold is a developer API platform: issue API keys, run validated
+            CRUD against a live REST API, and watch every request measured in
+            real time. Built with Node.js and Express — no frameworks on the
+            frontend, just the platform speaking for itself.
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#sandbox">Open the sandbox</a>
+            <a class="btn btn-ghost" href="#metrics">View live metrics</a>
+          </div>
+          <ul class="hero-chips" aria-label="Platform capabilities">
+            <li>10 endpoints</li>
+            <li>Dual-layer validation</li>
+            <li>Per-key rate limits</li>
+            <li>Nanosecond telemetry</li>
+          </ul>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="flow-diagram">
+            <span class="flow-node flow-in">client</span>
+            <span class="flow-split"></span>
+            <span class="flow-node">auth</span>
+            <span class="flow-node">validate</span>
+            <span class="flow-node">telemetry</span>
+          </div>
+          <p class="flow-caption">every request passes the manifold</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SANDBOX -->
+    <section class="section" id="sandbox" aria-labelledby="sandbox-title">
+      <div class="wrap">
+        <p class="section-kicker">Interactive</p>
+        <h2 id="sandbox-title">API sandbox</h2>
+        <p class="section-lede">
+          Fire real requests at the live API. Pick a preset or craft your own —
+          every response shows its HTTP status, round-trip time and the
+          <code>X-Response-Time</code> header the server measured.
+        </p>
+
+        <div class="sandbox-grid">
+          <div class="card">
+            <h3>Request builder</h3>
+            <div class="preset-row" role="group" aria-label="Request presets">
+              <button type="button" class="chip-btn" data-method="GET" data-endpoint="/api/health">GET /health</button>
+              <button type="button" class="chip-btn" data-method="GET" data-endpoint="/api/metrics">GET /metrics</button>
+              <button type="button" class="chip-btn" data-method="POST" data-endpoint="/api/keys" data-body='{"name":"sandbox-key"}'>POST /keys</button>
+              <button type="button" class="chip-btn" data-method="GET" data-endpoint="/api/projects">GET /projects</button>
+              <button type="button" class="chip-btn" data-method="POST" data-endpoint="/api/projects" data-body='{"name":"Launch Website","description":"Marketing site for the Q4 launch.","status":"active","tags":["web","q4"]}'>POST /projects</button>
+              <button type="button" class="chip-btn" data-method="GET" data-endpoint="/api/projects?status=active">Filter: active</button>
+            </div>
+
+            <div class="form-row">
+              <label class="field method-field">
+                <span>Method</span>
+                <select id="method">
+                  <option>GET</option>
+                  <option>POST</option>
+                  <option>PUT</option>
+                  <option>DELETE</option>
+                </select>
+              </label>
+              <label class="field endpoint-field">
+                <span>Endpoint</span>
+                <input id="endpoint" type="text" value="/api/health" spellcheck="false" autocomplete="off">
+              </label>
+            </div>
+
+            <label class="field">
+              <span>API key <em>(x-api-key header — required for /projects)</em></span>
+              <div class="key-input-row">
+                <input id="apiKeyInput" type="text" placeholder="mf_live_…" spellcheck="false" autocomplete="off">
+                <button type="button" class="btn btn-small" id="quickKey">Issue me a key</button>
+              </div>
+            </label>
+
+            <label class="field" id="bodyWrap">
+              <span>JSON body</span>
+              <textarea id="reqBody" rows="6" spellcheck="false" placeholder='{"name":"…"}'></textarea>
+            </label>
+
+            <button type="button" class="btn btn-primary btn-block" id="dispatchBtn">
+              <span aria-hidden="true">▶</span> Dispatch request
+            </button>
+            <p class="hint">Try POST /projects with <code>{"name":"x"}</code> — the gatekeeper rejects it with a structured 400.</p>
+          </div>
+
+          <div class="card response-card">
+            <h3>Response</h3>
+            <div id="respEmpty" class="resp-empty">
+              <p>No request yet.<br>Dispatch one to see the raw response.</p>
+            </div>
+            <div id="respResult" hidden>
+              <div class="resp-meta">
+                <span class="status-badge" id="respStatus">200</span>
+                <span id="respTime" class="mono"></span>
+                <span id="respServerTime" class="mono muted"></span>
+              </div>
+              <pre class="resp-body"><code id="respBody"></code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- METRICS -->
+    <section class="section" id="metrics" aria-labelledby="metrics-title">
+      <div class="wrap">
+        <p class="section-kicker">Telemetry</p>
+        <h2 id="metrics-title">Live metrics</h2>
+        <p class="section-lede">
+          The server measures every request with nanosecond precision and
+          aggregates it here. This dashboard refreshes itself — dispatch a few
+          requests in the sandbox and watch it move.
+        </p>
+
+        <div class="stat-grid">
+          <div class="stat-card"><p class="stat-value mono" id="mTotal">–</p><p class="stat-label">Total requests</p></div>
+          <div class="stat-card"><p class="stat-value mono" id="mAvg">–</p><p class="stat-label">Avg latency</p></div>
+          <div class="stat-card"><p class="stat-value mono" id="mP95">–</p><p class="stat-label">p95 latency</p></div>
+          <div class="stat-card"><p class="stat-value mono" id="mErr">–</p><p class="stat-label">Error rate</p></div>
+        </div>
+
+        <div class="card chart-card">
+          <h3>Latency over time</h3>
+          <canvas id="latChart" height="180" aria-label="Line chart of average and p95 latency over time" role="img"></canvas>
+          <div class="legend">
+            <span><i class="sw sw-amber"></i>avg</span>
+            <span><i class="sw sw-teal"></i>p95</span>
+          </div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="card">
+            <h3>Status codes</h3>
+            <div id="statusBars" class="status-bars"><p class="muted">Waiting for traffic…</p></div>
+          </div>
+          <div class="card">
+            <h3>Recent requests</h3>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead><tr><th>Time</th><th>Method</th><th>Path</th><th>Status</th><th>Latency</th></tr></thead>
+                <tbody id="recentBody"><tr><td colspan="5" class="muted">No requests yet.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KEYS -->
+    <section class="section" id="keys" aria-labelledby="keys-title">
+      <div class="wrap">
+        <p class="section-kicker">Authentication</p>
+        <h2 id="keys-title">API keys</h2>
+        <p class="section-lede">
+          Keys gate the <code>/projects</code> resource. Issue one, copy it once —
+          the secret is never shown again — then paste it into the sandbox.
+        </p>
+
+        <div class="keys-grid">
+          <div class="card">
+            <h3>Issue a key</h3>
+            <label class="field">
+              <span>Key name</span>
+              <input id="keyName" type="text" placeholder="e.g. my-laptop" maxlength="40" autocomplete="off">
+            </label>
+            <button type="button" class="btn btn-primary btn-block" id="issueBtn">Issue key</button>
+            <div id="newKeyWrap" class="new-key" hidden>
+              <p class="new-key-label">Your new key <em>(copy now — shown once)</em></p>
+              <div class="new-key-row">
+                <code id="newKeySecret" class="mono"></code>
+                <button type="button" class="btn btn-small" id="copyKey">Copy</button>
+              </div>
+            </div>
+            <p class="hint" id="keyError" role="alert" hidden></p>
+          </div>
+
+          <div class="card">
+            <h3>Issued keys</h3>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead><tr><th>Name</th><th>Key</th><th>Requests</th><th>Status</th><th></th></tr></thead>
+                <tbody id="keysBody"><tr><td colspan="5" class="muted">No keys yet.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOCS -->
+    <section class="section" id="docs" aria-labelledby="docs-title">
+      <div class="wrap">
+        <p class="section-kicker">Reference</p>
+        <h2 id="docs-title">Endpoints</h2>
+        <p class="section-lede">Everything the platform exposes. Auth column: <code>key</code> means the <code>x-api-key</code> header is required.</p>
+        <div class="card">
+          <div class="table-scroll">
+            <table class="data-table docs-table">
+              <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td><span class="m m-get">GET</span></td><td class="mono">/api/health</td><td class="muted">open</td><td>Service status and uptime</td></tr>
+                <tr><td><span class="m m-post">POST</span></td><td class="mono">/api/keys</td><td class="muted">open · 10/min per IP</td><td>Issue an API key (secret shown once)</td></tr>
+                <tr><td><span class="m m-get">GET</span></td><td class="mono">/api/keys</td><td class="muted">open</td><td>List issued keys (secrets masked)</td></tr>
+                <tr><td><span class="m m-delete">DELETE</span></td><td class="mono">/api/keys/:id</td><td class="muted">open</td><td>Revoke an API key</td></tr>
+                <tr><td><span class="m m-get">GET</span></td><td class="mono">/api/projects</td><td><span class="auth-key">key</span></td><td>List projects — filter by <code>status</code>, <code>tag</code>, <code>q</code>; paginate with <code>page</code>/<code>limit</code></td></tr>
+                <tr><td><span class="m m-post">POST</span></td><td class="mono">/api/projects</td><td><span class="auth-key">key</span></td><td>Create a project — dual-layer validation, 400 on violation</td></tr>
+                <tr><td><span class="m m-get">GET</span></td><td class="mono">/api/projects/:id</td><td><span class="auth-key">key</span></td><td>Fetch one project</td></tr>
+                <tr><td><span class="m m-put">PUT</span></td><td class="mono">/api/projects/:id</td><td><span class="auth-key">key</span></td><td>Partial update — merged document re-validated</td></tr>
+                <tr><td><span class="m m-delete">DELETE</span></td><td class="mono">/api/projects/:id</td><td><span class="auth-key">key</span></td><td>Delete a project</td></tr>
+                <tr><td><span class="m m-get">GET</span></td><td class="mono">/api/metrics</td><td class="muted">open</td><td>Live telemetry: totals, latency, status breakdown</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card validation-card">
+          <h3>The gatekeeper rule</h3>
+          <p><em>"Never trust the client."</em> Every write passes two layers before it touches data:</p>
+          <ol>
+            <li><strong>Syntactic</strong> — types, lengths, enums, formats. <code>{"name": "x"}</code> dies here.</li>
+            <li><strong>Semantic</strong> — domain rules, e.g. project names must be unique. Duplicates die here.</li>
+          </ol>
+          <p class="muted">Violations return <code>HTTP 400</code> with the failing layer named per field. Hammer an endpoint and the sliding-window limiter answers <code>HTTP 429</code> with a <code>Retry-After</code> header.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p><strong>Manifold</strong> — a developer API platform built with Node.js + Express.</p>
+      <p class="muted">DecodeLabs Internship Program · decodelabs.tech@gmail.com · www.decodelabs.tech</p>
+      <p class="muted small">Demo store is in-memory and resets when the server restarts — by design, for the assignment.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
