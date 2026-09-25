@@ -5,7 +5,7 @@ Issue API keys, run validated CRUD against a live REST API, and watch every
 request measured in real time — from a dark console frontend with a live
 sandbox, metrics dashboard, key manager and endpoint docs.
 
-**Live:** deploy to Vercel (see below) · **Stack:** Node.js, Express, vanilla HTML/CSS/JS
+**Live:** https://manifoldapi.vercel.app/ · **Stack:** Node.js, Express, vanilla HTML/CSS/JS
 
 ## Quickstart
 
@@ -17,10 +17,10 @@ npm start
 
 ## Deploy to Vercel
 
-1. Push this folder to a GitHub repo.
-2. Import it in Vercel (framework preset: **Other**).
-3. Deploy — no build step needed. `vercel.json` routes `/api/*` to the
-   Express app in `api/index.js`; static files are served from `public/`.
+## Live Demo
+🌐 **https://manifoldapi.vercel.app/**
+
+To deploy your own copy: import this repo in Vercel (framework preset: **Other**) — no build step needed. `vercel.json` routes `/api/*` to the Express app in `api/index.js`; static files are served from `public/`.
 
 ## API reference
 
