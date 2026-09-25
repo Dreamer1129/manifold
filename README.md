@@ -17,7 +17,7 @@ npm start
 
 ## Deploy to Vercel
 
-## Live Demo
+**Live Demo:** 
 🌐 **https://manifoldapi.vercel.app/**
 
 To deploy your own copy: import this repo in Vercel (framework preset: **Other**) — no build step needed. `vercel.json` routes `/api/*` to the Express app in `api/index.js`; static files are served from `public/`.
